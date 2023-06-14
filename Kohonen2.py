@@ -64,12 +64,14 @@ def initialize_weights(input_dim, output_dim):
 
 
 def topological_neighborhood(radius, center, grid):
+    if radius == 0:
+        return 0
     distance = np.abs(grid - center)
     return np.exp(-(distance ** 2) / (2 * (radius ** 2)))
 
 
-def learning_rate(initial_lr, iteration, max_iteration):
-    return initial_lr * (1 - iteration / max_iteration)
+def learning_rate_or_radius(lr, iteration):
+    return lr * 0.9 * (1 - iteration / 1000)
 
 
 def visualize_som(weights, iteration):
@@ -78,7 +80,7 @@ def visualize_som(weights, iteration):
 
     # Draw lines connecting each neuron and its neighbors
     for i in range(weights.shape[1] - 1):
-        plt.plot(weights[0, i:i+2], weights[1, i:i+2], 'r-')
+        plt.plot(weights[0, i:i + 2], weights[1, i:i + 2], 'r-')
 
     plt.title(f'SOM Weights at Iteration {iteration}')
     plt.xlim(0, 1)
@@ -86,15 +88,16 @@ def visualize_som(weights, iteration):
     plt.show()
 
 
-
 def kohonen_som(inputs, output_dim, max_iteration, initial_lr, initial_radius, visualize_interval=10):
     input_dim = inputs.shape[1]
     weights = initialize_weights(input_dim, output_dim)
-    grid = np.arange(output_dim)
+    radius = initial_radius
+    # grid = np.arange(output_dim)
+    lr = initial_lr
     for iteration in range(max_iteration):
         # update learning rate and radius
-        lr = learning_rate(initial_lr, iteration, max_iteration)
-        radius = initial_radius * np.exp(-iteration / np.log(max_iteration))
+        lr = learning_rate_or_radius(lr, iteration)
+        radius = learning_rate_or_radius(radius, iteration)
         for input_vector in inputs:
             # compute distances
             distances = np.sum((weights - input_vector.reshape(input_dim, -1)) ** 2, axis=0)
@@ -110,5 +113,3 @@ def kohonen_som(inputs, output_dim, max_iteration, initial_lr, initial_radius, v
             visualize_som(weights, iteration)
 
     return weights
-
-
