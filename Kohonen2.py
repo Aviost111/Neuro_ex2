@@ -75,10 +75,16 @@ def learning_rate(initial_lr, iteration, max_iteration):
 def visualize_som(weights, iteration):
     plt.figure(figsize=(6, 6))
     plt.scatter(weights[0], weights[1])
+
+    # Draw lines connecting each neuron and its neighbors
+    for i in range(weights.shape[1] - 1):
+        plt.plot(weights[0, i:i+2], weights[1, i:i+2], 'r-')
+
     plt.title(f'SOM Weights at Iteration {iteration}')
     plt.xlim(0, 1)
     plt.ylim(0, 1)
     plt.show()
+
 
 
 def kohonen_som(inputs, output_dim, max_iteration, initial_lr, initial_radius, visualize_interval=10):
