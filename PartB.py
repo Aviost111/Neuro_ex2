@@ -1,105 +1,41 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from minisom import MiniSom
 import cv2
+import numpy as np
+from minisom import MiniSom
+import matplotlib.pyplot as plt
 
-# # Load and preprocess the hand image
-# hand_img = cv2.imread("hand.jpg", cv2.IMREAD_GRAYSCALE)
-# hand_img = cv2.resize(hand_img, (0, 0), fx=0.5, fy=0.5)
-# hand_data = np.argwhere(hand_img < 255)
-#
-# # Define the dimensions of the SOM grid
-# grid_width = 20
-# grid_height = 20
-#
-# # Initialize the SOM
-# som = MiniSom(grid_width, grid_height, 2, sigma=1.0, learning_rate=0.5)
-#
-# # Start the training process
-# iterations = 1000
-# som.random_weights_init(hand_data)
-# som.train_random(hand_data, iterations)
-#
-# # Get the final positions of the SOM neurons
-# neuron_positions = som.get_weights()
-#
-# # Plot the hand data and the SOM grid
-# plt.scatter(hand_data[:, 1], hand_data[:, 0], color='b', label='hand Data')
-# plt.scatter(neuron_positions[:, :, 1], neuron_positions[:, :, 0], color='r', label='SOM Neurons')
-# plt.legend()
-# plt.title('SOM Superimposed on Hand Data')
-# plt.show()
+# Load the image
+img = cv2.imread('hand.jpg', cv2.IMREAD_GRAYSCALE)
 
+# Threshold the image to binary so we only have the hand
+_, img = cv2.threshold(img, 128, 255, cv2.THRESH_BINARY_INV)
 
-# Load and preprocess the hand image
-hand_img = cv2.imread("hand.jpg", cv2.IMREAD_GRAYSCALE)
-hand_img = cv2.resize(hand_img, (0, 0), fx=0.5, fy=0.5)
-hand_data = np.argwhere(hand_img < 255)
+# Get the x, y coordinates of all the black points
+y, x = np.nonzero(img)
+data = np.array([x, y]).T / np.array([img.shape[1], img.shape[0]])  # normalize to [0, 1]
 
-# Define the dimensions of the SOM grid
-grid_width = 20
-grid_height = 20
+# Initialize SOM
+som = MiniSom(20, 20, 2, sigma=1.0, learning_rate=0.5)
 
-# Initialize the SOM
-som = MiniSom(grid_width, grid_height, 2, sigma=1.0, learning_rate=0.5)
+# Train the SOM
+som.train_random(data, 10000)
 
-# Start the training process
-iterations = 10000
-som.random_weights_init(hand_data)
-
-# Plot the initial state
-plt.scatter(hand_data[:, 1], hand_data[:, 0], color='b', label='Hand Data')
-plt.scatter(som._weights[:, :, 1].flatten(), som._weights[:, :, 0].flatten(), color='r', label='SOM Neurons')
-plt.legend()
-plt.title('SOM Superimposed on Hand Data - Iteration 0')
+# Visualize the SOM grid superimposed on the image
+plt.imshow(img, cmap='gray')
+plt.plot(som.get_weights()[:, :, 0].flatten() * img.shape[1], som.get_weights()[:, :, 1].flatten() * img.shape[0], 'r.')
 plt.show()
 
-# Perform iterations and plot the results
-for i in range(iterations):
-    som.train_random(hand_data, 1)
+# Define the range of x and y coordinates for the finger to be removed
+x_min, x_max = 0.4, 0.5  # replace with actual values
+y_min, y_max = 0.2, 0.4  # replace with actual values
 
-    if (i % 1000 == 0) or i == iterations - 1:
-        # Plot the current state
-        plt.scatter(hand_data[:, 1], hand_data[:, 0], color='b', label='Hand Data')
-        plt.scatter(som._weights[:, :, 1].flatten(), som._weights[:, :, 0].flatten(), color='r', label='SOM Neurons')
-        plt.legend()
-        plt.title(f'SOM Superimposed on Hand Data - Iteration {i}')
-        plt.show()
-# def visualize_som(som, iteration):
-#     plt.figure(figsize=(6, 6))
-#     plt.scatter(som.weights[:, :, 1].flatten(), som.weights[:, :, 0].flatten(), color='red', label='SOM Neurons')
-#     plt.scatter(som.data[:, 1], som.data[:, 0], color='lightblue', label='hand Data')
-#     plt.legend()
-#     plt.title(f'SOM Weights at Iteration {iteration}')
-#     plt.xlim(0, 1)
-#     plt.ylim(0, 1)
-#     plt.show()
-#
-# # Load and preprocess the hand image
-# hand_img = cv2.imread("hand.jpg", cv2.IMREAD_GRAYSCALE)
-# hand_img = cv2.resize(hand_img, (0, 0), fx=0.5, fy=0.5)
-# hand_data = np.argwhere(hand_img < 255)
-#
-# # Define the dimensions of the SOM grid
-# grid_width = 20
-# grid_height = 20
-#
-# # Initialize the SOM
-# som = MiniSom(grid_width, grid_height, 2, sigma=1.0, learning_rate=0.5)
-#
-# # Start the training process
-# iterations = 1000
-# som.random_weights_init(hand_data)
-# for i in range(iterations):
-#     t = i + 1  # Current iteration
-#     x = hand_data[i % len(hand_data)]
-#     winning_neuron = som.winner(x)
-#     som.update(x, winning_neuron, t)
-#     if t % 100 == 0 or t == iterations:
-#         visualize_som(som, t)
-#
-# # Get the final positions of the SOM neurons
-# neuron_positions = som.get_weights()
-#
-# # Plot the final SOM and hand data
-# visualize_som(som, 'Final')
+# Remove one finger
+data = data[~((data[:, 0] > x_min) & (data[:, 0] < x_max) & (data[:, 1] > y_min) & (data[:, 1] < y_max))]
+
+# Continue training the SOM
+som = MiniSom(20, 20, 2, sigma=1.0, learning_rate=0.5)  # re-initialize SOM
+som.train_random(data, 10000)
+
+# Visualize the updated SOM grid
+plt.imshow(img, cmap='gray')
+plt.plot(som.get_weights()[:, :, 0].flatten() * img.shape[1], som.get_weights()[:, :, 1].flatten() * img.shape[0], 'r.')
+plt.show()

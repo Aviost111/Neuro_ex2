@@ -79,9 +79,9 @@ def Part_B():
     max = max * 1.0
     points2[:, 0] = points2[:, 0] / max[0]
     points2[:, 1] = points2[:, 1] / max[1]
-    ko.refit(points2)
+    # ko.refit(points2)
 
-    plt.imshow(hand2)
+    # plt.imshow(hand2)
     pass
 
 
