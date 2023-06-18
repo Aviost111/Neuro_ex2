@@ -148,8 +148,8 @@ class Kohonen:
 
         fig, ax = plt.subplots()
         ax.scatter([xs], [ys], c='r')
-        ax.set_xlim(0, 1)
-        ax.set_ylim(0, 1)
+        ax.set_xlim(-4, 4)
+        ax.set_ylim(-4, 4)
         ax.plot(xs, ys, 'b-')
         ax.scatter(self.data[:, 0], self.data[:, 1], alpha=0.3)
         plt.title("Plot1D Iteration No. " + str(t))
