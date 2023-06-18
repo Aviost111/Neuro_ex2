@@ -66,10 +66,11 @@ def Part_B():
     print(len(points))
     shape = hand.shape
     print(points.max(axis=0), shape)
-    layers = (np.ones(15) * 15).astype(int)
-    ko = Kohonen(neurons_amount=layers, learning_rate=0.4)
-    ko.fit(points, iteration=10000)
-
+    layers = (np.ones(20) * 20).astype(int)
+    ko2 = KohonenSOM(neurons_amount=layers, learning_rate=0.4)
+    # ko = Kohonen(neurons_amount=layers, learning_rate=0.4)
+    # ko.fit(points, iteration=10000)
+    ko2.fit(points, True)
     hand2 = cv.imread("80%_hand.jpg")
     hand2 = cv2.cvtColor(hand2, cv2.COLOR_BGR2GRAY)
     hand2 = cv2.resize(hand2, (0, 0), fx=0.5, fy=0.5)
