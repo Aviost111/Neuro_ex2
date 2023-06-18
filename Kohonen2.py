@@ -205,7 +205,7 @@ class KohonenSOM:
     def learning_rate_or_radius(self, value, iteration):
         return value * np.exp(-iteration / self.lamda)
 
-    def visualize_som(self, iteration):
+    def visualize_som(self, iteration,flag):
         plt.figure(figsize=(6, 6))
         plt.scatter(self.neurons[:, 0], self.neurons[:, 1])
 
@@ -217,11 +217,15 @@ class KohonenSOM:
         plt.scatter(self.data[:, 0], self.data[:, 1], color='lightblue', alpha=1.0)
 
         plt.title(f'SOM Weights at Iteration {iteration}')
-        plt.xlim(0, 1)
-        plt.ylim(0, 1)
+        if flag:
+            plt.xlim(0, 1)
+            plt.ylim(0, 1)
+        else:
+            plt.xlim(-4, 4)
+            plt.ylim(-4, 4)
         plt.show()
 
-    def fit(self, data_set):
+    def fit(self, data_set,flag):
         if len(data_set) == 0:
             raise ValueError("Data set cannot be empty.")
         self.data = np.array(data_set)
@@ -241,7 +245,7 @@ class KohonenSOM:
                 self.neurons[neuron_idx] += curr_learning_rate * neighborhood * (vec - curr_neuron)
 
             if (i % self.visualize_interval == 0) or (i == self.max_iteration - 1):
-                self.visualize_som(i)
+                self.visualize_som(i,flag)
 
     def nearest_neuron(self, vec):
         min_dist = np.inf

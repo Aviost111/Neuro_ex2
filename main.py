@@ -13,9 +13,9 @@ def Part_A1A():
     for i in range(1000):
         points.append([random.uniform(0, 1), random.uniform(0, 1)])
     ko = KohonenSOM(neurons_amount=[20])
-    ko.fit(points)
+    ko.fit(points, flag=True)
     ko = KohonenSOM(neurons_amount=[200])
-    ko.fit(points)
+    ko.fit(points, flag=True)
     return
 
 
@@ -24,17 +24,17 @@ def Part_A1B():
     for i in range(1000):
         points.append([random.gauss(0.5, 0.15), random.uniform(0, 1)])
     ko = KohonenSOM(neurons_amount=[20])
-    ko.fit(points)
+    ko.fit(points, flag=True)
     ko = KohonenSOM(neurons_amount=[200])
-    ko.fit(points)
+    ko.fit(points, flag=True)
 
     points = []
     for i in range(1000):
         points.append([random.gauss(0.5, 0.15), random.gauss(0.5, 0.15)])
     ko = KohonenSOM(neurons_amount=[20])
-    ko.fit(points)
+    ko.fit(points, flag=True)
     ko = KohonenSOM(neurons_amount=[200])
-    ko.fit(points)
+    ko.fit(points, flag=True)
     return
 
 
@@ -47,8 +47,8 @@ def Part_A2():
         if 4 <= distance <= 16:
             points.append([x, y])
     circle = points
-    ko = Kohonen(neurons_amount=[300], learning_rate=0.05)
-    ko.fit(circle, iteration=10000)
+    ko = KohonenSOM(neurons_amount=[300], learning_rate=0.05)
+    ko.fit(circle, flag=False)
     pass
 
 
@@ -85,7 +85,7 @@ def Part_B():
 
 
 if __name__ == '__main__':
-    Part_A1A()
+    # Part_A1A()
     # Part_A1B()
     # Part_A2()
-    # Part_B()
+    Part_B()
