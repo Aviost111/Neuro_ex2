@@ -12,10 +12,13 @@ def Part_A1A():
     points = []
     for i in range(1000):
         points.append([random.uniform(0, 1), random.uniform(0, 1)])
-    ko = KohonenSOM(neurons_amount=[20])
+    layers = (np.ones(10) * 10).astype(int)
+    ko = KohonenSOM(neurons_amount=layers)
     ko.fit(points, flag=True)
-    ko = KohonenSOM(neurons_amount=[200])
-    ko.fit(points, flag=True)
+    # ko = KohonenSOM(neurons_amount=[20])
+    # ko.fit(points, flag=True)
+    # ko = KohonenSOM(neurons_amount=[200])
+    # ko.fit(points, flag=True)
     return
 
 
@@ -53,40 +56,68 @@ def Part_A2():
 
 
 def Part_B():
-    hand = cv.imread("hand.jpg")
-    hand = cv2.cvtColor(hand, cv2.COLOR_BGR2GRAY)
-    hand = cv2.resize(hand, (0, 0), fx=0.5, fy=0.5)
-
-    points = np.argwhere(hand != 255).astype(np.float32)
-    plt.show()
-    max = points.max(axis=0)
-    max = max * 1.0
-    points[:, 0] = points[:, 0] / max[0]
-    points[:, 1] = points[:, 1] / max[1]
-    print(len(points))
-    shape = hand.shape
-    print(points.max(axis=0), shape)
-    layers = (np.ones(20) * 20).astype(int)
-    ko2 = KohonenSOM(neurons_amount=layers, learning_rate=0.4)
-    # ko = Kohonen(neurons_amount=layers, learning_rate=0.4)
-    # ko.fit(points, iteration=10000)
-    ko2.fit(points, True)
-    hand2 = cv.imread("80%_hand.jpg")
-    hand2 = cv2.cvtColor(hand2, cv2.COLOR_BGR2GRAY)
-    hand2 = cv2.resize(hand2, (0, 0), fx=0.5, fy=0.5)
-    points2 = np.argwhere(hand2 != 255).astype(np.float32)
-    max = points2.max(axis=0)
-    max = max * 1.0
-    points2[:, 0] = points2[:, 0] / max[0]
-    points2[:, 1] = points2[:, 1] / max[1]
+    # hand = cv.imread("hand.jpg")
+    # hand = cv2.cvtColor(hand, cv2.COLOR_BGR2GRAY)
+    # hand = cv2.resize(hand, (0, 0), fx=0.5, fy=0.5)
+    #
+    # points = np.argwhere(hand != 255).astype(np.float32)
+    # plt.show()
+    # max = points.max(axis=0)
+    # max = max * 1.0
+    # points[:, 0] = points[:, 0] / max[0]
+    # points[:, 1] = points[:, 1] / max[1]
+    # print(len(points))
+    # shape = hand.shape
+    # print(points.max(axis=0), shape)
+    # layers = (np.ones(20) * 20).astype(int)
+    # ko2 = KohonenSOM(neurons_amount=layers, learning_rate=0.4)
+    # # ko = Kohonen(neurons_amount=layers, learning_rate=0.4)
+    # # ko.fit(points, iteration=10000)
+    # ko2.fit(points, True)
+    # hand2 = cv.imread("80%_hand.jpg")
+    # hand2 = cv2.cvtColor(hand2, cv2.COLOR_BGR2GRAY)
+    # hand2 = cv2.resize(hand2, (0, 0), fx=0.5, fy=0.5)
+    # points2 = np.argwhere(hand2 != 255).astype(np.float32)
+    # max = points2.max(axis=0)
+    # max = max * 1.0
+    # points2[:, 0] = points2[:, 0] / max[0]
+    # points2[:, 1] = points2[:, 1] / max[1]
     # ko.refit(points2)
+    points = []
+    for j in range(200):
+        x = np.random.randint(100, 200)
+        y = np.random.randint(400, 1000)
+        if (x / 1000, y / 1000) not in points:
+            points.append((x / 1000, y / 1000))
+    for j in range(200):
+        x = np.random.randint(300, 400)
+        y = np.random.randint(400, 1000)
+        if (x / 1000, y / 1000) not in points:
+            points.append((x / 1000, y / 1000))
+    for j in range(200):
+        x = np.random.randint(500, 600)
+        y = np.random.randint(400, 1000)
+        if (x / 1000, y / 1000) not in points:
+            points.append((x / 1000, y / 1000))
+    for j in range(200):
+        x = np.random.randint(700, 800)
+        y = np.random.randint(400, 1000)
+        if (x / 1000, y / 1000) not in points:
+            points.append((x / 1000, y / 1000))
+    for i in range(1000):
+        x = np.random.randint(100, 800)
+        y = np.random.randint(0, 400)
+        if (x / 1000, y / 1000) not in points:
+            points.append((x / 1000, y / 1000))
+    ko = KohonenSOM(neurons_amount=[300])
+    ko.fit(points, True)
 
     # plt.imshow(hand2)
     pass
 
 
 if __name__ == '__main__':
-    # Part_A1A()
+    Part_A1A()
     # Part_A1B()
     # Part_A2()
-    Part_B()
+    # Part_B()
